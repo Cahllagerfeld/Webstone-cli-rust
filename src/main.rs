@@ -6,6 +6,8 @@ use std::{
     io::Write,
 };
 
+use dialoguer::{theme::ColorfulTheme, MultiSelect};
+
 fn main() {
     let args = command::Cli::parse();
 
@@ -24,6 +26,16 @@ fn main() {
 fn handle_create_command(path: String) -> () {
     let template = include_str!("../templates/+page.svelte.template");
     let target_path = format!("src/routes/{}/+page.svelte", path);
+
+    let multiselected = &["+page.svelte", "+page.ts", "+layout.svelte"];
+    let defaults = &[true, false, false];
+
+    let selections = MultiSelect::with_theme(&ColorfulTheme::default())
+        .with_prompt("Pick your types")
+        .items(&multiselected[..])
+        .defaults(&defaults[..])
+        .interact()
+        .unwrap();
 
     create_dir_all(format!("src/routes/{}", path)).expect("failed to create directory");
 
