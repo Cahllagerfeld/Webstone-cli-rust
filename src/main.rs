@@ -25,7 +25,6 @@ fn main() {
 
 fn handle_create_command(path: String) -> () {
     let template = include_str!("../templates/+page.svelte.template");
-    let target_path = format!("src/routes/{}/+page.svelte", path);
 
     let multiselected = &["+page.svelte", "+page.ts", "+layout.svelte"];
     let defaults = &[true, false, false];
@@ -37,14 +36,22 @@ fn handle_create_command(path: String) -> () {
         .interact()
         .unwrap();
 
-    create_dir_all(format!("src/routes/{}", path)).expect("failed to create directory");
+    if selections.is_empty() {
+        println!("No types selected. Aborting...");
+        return;
+    }
 
-    let mut file = fs::OpenOptions::new()
-        .create(true)
-        .write(true)
-        .open(target_path)
-        .expect("failed to create file");
+    for selection in selections {
+        create_dir_all(format!("src/routes/{}", path)).expect("failed to create directory");
 
-    file.write_all(template.as_bytes())
-        .expect("failed to write file");
+        let target_path = format!("src/routes/{}/{}", path, multiselected[selection]);
+        let mut file = fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .open(target_path)
+            .expect("failed to create file");
+
+        file.write_all(template.as_bytes())
+            .expect("failed to write file");
+    }
 }
