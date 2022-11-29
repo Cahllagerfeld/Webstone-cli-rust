@@ -1,5 +1,3 @@
-use std::string;
-
 use clap::{Args, Parser, Subcommand};
 
 /// Simple program to greet a person
@@ -19,7 +17,9 @@ pub enum Commands {
 
 #[derive(Subcommand, Debug)]
 pub enum RouteCommands {
+    /// Create a new route
     Create(CreateCommand),
+    /// Delete an existing route
     Delete(DeleteCommand),
 }
 
