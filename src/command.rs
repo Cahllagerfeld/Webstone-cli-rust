@@ -1,6 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 
-/// Simple program to greet a person
+/// Program for creating and deleting Sveltekit routes
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
