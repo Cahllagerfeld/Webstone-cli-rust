@@ -11,11 +11,8 @@ github:
         # add a check to pull requests (defaults to true)
         addCheck: true
         # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
-        addComment: true
-        # add a "Review in Gitpod" button to the pull request's description (defaults to false)
         addBadge: true
         # add a label once the prebuild is ready to pull requests (defaults to false)
         addLabel: true
-# List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/44_config_start_tasks/
 tasks:
     - init: cargo install --path . 
