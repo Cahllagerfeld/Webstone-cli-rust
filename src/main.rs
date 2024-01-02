@@ -1,11 +1,12 @@
 mod command;
+mod templates;
+use askama::Template;
 use clap::Parser;
 use dialoguer::{theme::ColorfulTheme, MultiSelect};
-use include_dir::{include_dir, Dir};
-use std::{
-    fs::create_dir_all,
-    fs::{self},
-    io::Write,
+use std::io::Write;
+use templates::{
+    ErrorDotSvelte, LayoutDotServer, LayoutDotSvelte, LayoutDotTs, PageDotServer, PageDotSvelte,
+    PageDotTs, ServerDotTs,
 };
 
 fn main() {
@@ -24,7 +25,7 @@ fn main() {
 }
 
 fn handle_create_command(path: String) -> () {
-    static TEMPLATES: Dir = include_dir!("templates");
+    // static TEMPLATES: Dir = include_dir!("templates");
 
     let multiselected = &[
         "+page.svelte",
@@ -50,17 +51,29 @@ fn handle_create_command(path: String) -> () {
         return;
     }
 
-    create_dir_all(format!("src/routes/{}", path)).expect("failed to create directory");
+    let directory = format!("src/routes/{}", path);
+    let directory_path = std::path::Path::new(&directory);
+
+    if !directory_path.exists() {
+        std::fs::create_dir_all(directory_path).expect("failed to create directory");
+    }
 
     for selection in selections {
-        let template = TEMPLATES
-            .get_file(format!("{}.template", multiselected[selection]))
-            .unwrap()
-            .contents_utf8()
-            .unwrap();
+        let target_path = directory_path.join(&multiselected[selection]);
 
-        let target_path = format!("src/routes/{}/{}", path, multiselected[selection]);
-        let mut file = fs::OpenOptions::new()
+        let template = match multiselected[selection] {
+            "+page.svelte" => PageDotSvelte {}.render().unwrap(),
+            "+page.ts" => PageDotTs {}.render().unwrap(),
+            "+page.server.ts" => PageDotServer {}.render().unwrap(),
+            "+layout.svelte" => LayoutDotSvelte {}.render().unwrap(),
+            "+layout.ts" => LayoutDotTs {}.render().unwrap(),
+            "+layout.server.ts" => LayoutDotServer {}.render().unwrap(),
+            "+server.ts" => ServerDotTs {}.render().unwrap(),
+            "+error.svelte" => ErrorDotSvelte {}.render().unwrap(),
+            _ => panic!("unknown template"),
+        };
+
+        let mut file = std::fs::OpenOptions::new()
             .create(true)
             .write(true)
             .open(target_path)
