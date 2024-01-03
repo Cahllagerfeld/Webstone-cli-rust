@@ -81,3 +81,27 @@ pub fn handle_delete_route(path: String) -> () {
     std::fs::remove_dir_all(directory_path).expect("failed to delete directory");
     spinner.stop_and_persist("✔", "Route deleted successfully".into());
 }
+
+pub fn handle_count_routes() -> () {
+    let mut count = 0;
+    let mut spinner = create_spinner("Counting Routes...".into());
+    let directory_path = std::path::Path::new("src/routes");
+
+    if !directory_path.exists() {
+        println!("No routes directory found. Aborting...");
+        return;
+    }
+
+    for entry in walkdir::WalkDir::new(directory_path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        if entry.file_type().is_file() {
+            let file_name = entry.file_name().to_string_lossy();
+            if file_name == "+page.svelte" || file_name == "+server.ts" {
+                count += 1;
+            }
+        }
+    }
+    spinner.stop_and_persist("✔", format!("{} routes found", count).into());
+}

@@ -15,5 +15,8 @@ fn main() {
         app::Commands::Route(app::RouteCommands::Delete(app::DeleteCommand { path })) => {
             handlers::handle_delete_route(path)
         }
+        app::Commands::Route(app::RouteCommands::Count(app::CountCommand {})) => {
+            handlers::handle_count_routes()
+        }
     }
 }
