@@ -13,7 +13,7 @@ fn main() {
             handlers::handle_create_command(path)
         }
         app::Commands::Route(app::RouteCommands::Delete(app::DeleteCommand { path })) => {
-            println!("Delete route: {}", path);
+            handlers::handle_delete_route(path)
         }
     }
 }
