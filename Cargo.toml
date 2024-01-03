@@ -9,3 +9,4 @@ edition = "2021"
 askama = "0.12.1"
 clap = { version = "4.4.12", features = ["derive"] }
 dialoguer = "0.11.0"
+spinners = "4.1.1"

@@ -4,6 +4,7 @@ use crate::templates::{
 };
 
 use askama::Template;
+use cli::create_spinner;
 use dialoguer::{theme::ColorfulTheme, MultiSelect};
 use std::io::Write;
 
@@ -32,6 +33,7 @@ pub fn handle_create_command(path: String) -> () {
         return;
     }
 
+    let mut spinner = create_spinner("Creating Route...".into());
     let directory = format!("src/routes/{}", path);
     let directory_path = std::path::Path::new(&directory);
 
@@ -62,6 +64,8 @@ pub fn handle_create_command(path: String) -> () {
 
         file.write_all(template.as_bytes())
             .expect("failed to write file");
+
+        spinner.stop_and_persist("✔", "Route created successfully".into());
     }
 }
 
@@ -73,6 +77,7 @@ pub fn handle_delete_route(path: String) -> () {
         println!("Route does not exist. Aborting...");
         return;
     }
-
+    let mut spinner = create_spinner("Deleting Route...".into());
     std::fs::remove_dir_all(directory_path).expect("failed to delete directory");
+    spinner.stop_and_persist("✔", "Route deleted successfully".into());
 }
