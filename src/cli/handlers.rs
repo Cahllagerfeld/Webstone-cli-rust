@@ -64,3 +64,15 @@ pub fn handle_create_command(path: String) -> () {
             .expect("failed to write file");
     }
 }
+
+pub fn handle_delete_route(path: String) -> () {
+    let directory = format!("src/routes/{}", path);
+    let directory_path = std::path::Path::new(&directory);
+
+    if !directory_path.exists() {
+        println!("Route does not exist. Aborting...");
+        return;
+    }
+
+    std::fs::remove_dir_all(directory_path).expect("failed to delete directory");
+}
