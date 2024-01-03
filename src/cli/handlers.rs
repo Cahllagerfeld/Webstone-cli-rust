@@ -2,7 +2,6 @@ use crate::templates::{
     ErrorDotSvelte, LayoutDotServer, LayoutDotSvelte, LayoutDotTs, PageDotServer, PageDotSvelte,
     PageDotTs, ServerDotTs,
 };
-
 use askama::Template;
 use cli::create_spinner;
 use dialoguer::{theme::ColorfulTheme, MultiSelect};
@@ -97,9 +96,11 @@ pub fn handle_count_routes() -> () {
         .filter_map(|e| e.ok())
     {
         if entry.file_type().is_file() {
-            let file_name = entry.file_name().to_string_lossy();
-            if file_name == "+page.svelte" || file_name == "+server.ts" {
-                count += 1;
+            if let Some(file_name) = entry.file_name().to_str() {
+                match file_name {
+                    "+page.svelte" | "+server.ts" => count += 1,
+                    _ => {}
+                }
             }
         }
     }
