@@ -2,7 +2,6 @@ use crate::templates::{
     ErrorDotSvelte, LayoutDotServer, LayoutDotSvelte, LayoutDotTs, PageDotServer, PageDotSvelte,
     PageDotTs, ServerDotTs,
 };
-
 use askama::Template;
 use cli::create_spinner;
 use dialoguer::{theme::ColorfulTheme, MultiSelect};
@@ -80,4 +79,30 @@ pub fn handle_delete_route(path: String) -> () {
     let mut spinner = create_spinner("Deleting Route...".into());
     std::fs::remove_dir_all(directory_path).expect("failed to delete directory");
     spinner.stop_and_persist("✔", "Route deleted successfully".into());
+}
+
+pub fn handle_count_routes() -> () {
+    let mut count = 0;
+    let mut spinner = create_spinner("Counting Routes...".into());
+    let directory_path = std::path::Path::new("src/routes");
+
+    if !directory_path.exists() {
+        println!("No routes directory found. Aborting...");
+        return;
+    }
+
+    for entry in walkdir::WalkDir::new(directory_path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        if entry.file_type().is_file() {
+            if let Some(file_name) = entry.file_name().to_str() {
+                match file_name {
+                    "+page.svelte" | "+server.ts" => count += 1,
+                    _ => {}
+                }
+            }
+        }
+    }
+    spinner.stop_and_persist("✔", format!("{} routes found", count).into());
 }
