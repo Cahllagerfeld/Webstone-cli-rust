@@ -1,2 +1,2 @@
 pub mod app;
-pub mod handlers;
+pub mod cli_handlers;

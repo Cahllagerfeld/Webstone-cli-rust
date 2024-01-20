@@ -13,6 +13,9 @@ pub enum Commands {
     /// Command for handling route actions
     #[command(subcommand)]
     Route(RouteCommands),
+
+    /// Spin up a local server
+    Up(UpCommand),
 }
 
 #[derive(Subcommand, Debug)]
@@ -37,3 +40,6 @@ pub struct DeleteCommand {
 
 #[derive(Debug, Args)]
 pub struct CountCommand {}
+
+#[derive(Debug, Args)]
+pub struct UpCommand {}
