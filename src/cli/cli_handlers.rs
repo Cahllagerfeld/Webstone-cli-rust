@@ -113,7 +113,7 @@ pub fn handle_count_routes() -> () {
 
 #[tokio::main]
 pub async fn spin_up_server() -> () {
-    let app = Router::new().route("/", get(server_handlers::handler));
+    let app = Router::new().route("/", get(server_handlers::index));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:8888")
         .await

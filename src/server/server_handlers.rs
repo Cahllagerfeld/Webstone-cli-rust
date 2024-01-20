@@ -1,5 +1,13 @@
+use askama_axum::IntoResponse;
 use axum::response::Html;
 
-pub async fn handler() -> Html<&'static str> {
-    Html("<h1>Hello, World!</h1>")
+use askama::Template;
+
+#[derive(Template)]
+#[template(path = "server/index.html")]
+pub struct IndexTemplate {}
+
+pub async fn index() -> impl IntoResponse {
+    let template = IndexTemplate {};
+    return Html(template.render().unwrap()).into_response();
 }
