@@ -1,8 +1,12 @@
-use crate::templates::{
-    ErrorDotSvelte, LayoutDotServer, LayoutDotSvelte, LayoutDotTs, PageDotServer, PageDotSvelte,
-    PageDotTs, ServerDotTs,
+use crate::{
+    server::server_handlers,
+    templates::{
+        ErrorDotSvelte, LayoutDotServer, LayoutDotSvelte, LayoutDotTs, PageDotServer,
+        PageDotSvelte, PageDotTs, ServerDotTs,
+    },
 };
 use askama::Template;
+use axum::{routing::get, Router};
 use cli::create_spinner;
 use dialoguer::{theme::ColorfulTheme, MultiSelect};
 use std::io::Write;
@@ -105,4 +109,16 @@ pub fn handle_count_routes() -> () {
         }
     }
     spinner.stop_and_persist("✔", format!("{} routes found", count).into());
+}
+
+#[tokio::main]
+pub async fn spin_up_server() -> () {
+    let app = Router::new().route("/", get(server_handlers::index));
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8888")
+        .await
+        .unwrap();
+
+    println!("listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app).await.unwrap();
 }

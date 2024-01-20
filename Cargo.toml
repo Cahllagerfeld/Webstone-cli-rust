@@ -6,8 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-askama = "0.12.1"
+askama = { version = "0.12.1", features = ["with-axum"] }
+askama_axum = "0.4.0"
+axum = "0.7.4"
 clap = { version = "4.4.12", features = ["derive"] }
 dialoguer = "0.11.0"
 spinners = "4.1.1"
+tokio = { version = "1.35.1", features = ["full"] }
 walkdir = "2.4.0"
